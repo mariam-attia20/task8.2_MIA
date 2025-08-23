@@ -85,7 +85,11 @@ class optimusprime : public Character
 {
 public:
     optimusprime()
-        : Character( "OptimusPrime", 100, { Weapon("Ion Blaster", 20), Weapon("Energon Axe", 15), Weapon("Shoulder Cannon", 25) }) {}
+        : Character( "OptimusPrime", 100, { 
+            Weapon("Ion rifle", 6), 
+            Weapon("Energon swords", 12),
+            Weapon("Shoulder Cannon", 45) 
+        }) {}
 };
 
 // one for megatron
@@ -93,9 +97,9 @@ class megatron : public Character
 {
 public:
     megatron() : Character( "Megatron", 100, {
-            Weapon("Fusion Cannon", 25),
-            Weapon("Dark Blade", 18),
-            Weapon("Arm Blaster", 22)
+            Weapon("Fusion Cannon", 9),
+            Weapon("fusion sword", 18),
+            Weapon("tank mode", 60)
         }) {}
 
 };
@@ -108,6 +112,8 @@ int main()
     optimusprime op;
     megatron mg;
 
+    std::cout << "Battle begins "<< std::endl;
+
     while (op.Alive() && mg.Alive())
     {
         op.attack(mg);
@@ -116,6 +122,7 @@ int main()
             mg.attack(op);
         }
     }
+     std::cout << "Battle ended!" << std::endl;
     if (op.Alive())
     {
         std::cout << op.name << "WINS! with health" << op.health << std::endl;
