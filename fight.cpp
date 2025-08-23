@@ -1,8 +1,9 @@
 // libraries to include
 #include <iostream>
 #include <string>
-
-
+#include <vector> // for using vector
+#include <cstdlib> // for rand()
+#include <ctime>   // for time()
 
 // creat a class for weapons
 // attributes: name , damage
@@ -24,7 +25,6 @@ public:
     }
 };
 
-
 // create a class for the characters
 // attributes: health , weapon , name
 // functions ; attack , if they are alive
@@ -32,62 +32,97 @@ public:
 class Character
 {
 public:
-    std:: string name;
-   int health;
-   Weapon weapon ;
-    Character(std::string n, int h , Weapon w):name(n),health(h),weapon(w){ // change the order bec.of we use weapon in the character
+    std::string name;
+    int health;
+    std::vector<Weapon> weapons;
 
+    Character(std::string n, int h, std::vector<Weapon> w) : name(n), health(h), weapons(w)
+    { // change the order bec.of we use weapon in the character
     }
-    bool Alive(){
-        if(health>0){
+    bool Alive()
+    {
+        if (health > 0)
+        {
             return true;
         }
-        else{
+        else
+        {
             return false;
         }
     }
-    void attack(Character &opponent){
-        std::cout << name << " attacks with " << weapon.name << "!" ;
-        if(weapon.tryToHit()){
-            opponent.health -= weapon.damage;
-            std::cout<<"ITS A HIT!"<<opponent.name<<" takes"<<weapon.damage<<"damage and now has"<<opponent.health<<"health left."<<std::endl;
-        }
-
+    Weapon chooseWeapon() // to choose a weapon randomly
+    {
+        int index = rand() % weapons.size(); // Random index
+        return weapons[index];
     }
-    
+
+    void attack(Character &opponent)
+    {
+        Weapon currentWeapon = chooseWeapon();
+
+        std::cout << name << " attacks with " << currentWeapon.name << "!";
+        if (currentWeapon.tryToHit())
+        {
+            opponent.health -= currentWeapon.damage;
+
+            if (opponent.health < 0)
+                opponent.health = 0;
+
+            std::cout << "ITS A HIT!" << opponent.name << " takes" << currentWeapon.damage << "damage and now has" << opponent.health << "health left." << std::endl;
+        }
+        else
+        {
+            std::cout << "MISSED!" << std::endl;
+        }
+        std::cout << opponent.name << "'s health: " << opponent.health << "\n"
+                  << std::endl;
+    }
 };
 
 // class inheritance for eagh character type
 // one for optimuseprime
-class optimusprime: public Character{
-    public:
-    optimusprime():Character( "Optimus Prime",100,Weapon("iron blaster",20)){
-
-    }
+class optimusprime : public Character
+{
+public:
+    optimusprime()
+        : Character( "OptimusPrime", 100, { Weapon("Ion Blaster", 20), Weapon("Energon Axe", 15), Weapon("Shoulder Cannon", 25) }) {}
 };
 
 // one for megatron
-class megatron: public Character{
-    public:
-    megatron():Character( "Optimus Prime",100,Weapon("iron blaster",20)){
+class megatron : public Character
+{
+public:
+    megatron() : Character( "Megatron", 100, {
+            Weapon("Fusion Cannon", 25),
+            Weapon("Dark Blade", 18),
+            Weapon("Arm Blaster", 22)
+        }) {}
 
-    }
 };
-//main function
-int main(){
+// main function
+int main()
+{
+    srand(time(0));
+
+    //robotes...
     optimusprime op;
     megatron mg;
-    while(op.Alive() && mg.Alive()){
+
+    while (op.Alive() && mg.Alive())
+    {
         op.attack(mg);
-        if(mg.Alive()){
+        if (mg.Alive())
+        {
             mg.attack(op);
         }
     }
-    if(op.Alive()){
-        std::cout<<op.name<<"wins!"<<std::endl;
+    if (op.Alive())
+    {
+        std::cout << op.name << "WINS! with health" << op.health << std::endl;
     }
-    else{
-        std::cout<<mg.name<<"wins!"<<std::endl;
+    else
+    {
+        std::cout << mg.name << "WINS! with health" << mg.health << std::endl;
     }
     return 0;
 }
