@@ -13,15 +13,14 @@ class Weapon
 public:
     std::string name;
     int damage;
+     int accuracy;
 
-    Weapon(std::string n, int d) : name(n), damage(d) {}
+    Weapon(std::string n, int d , int a) : name(n), damage(d), accuracy(a) {}
 
     bool tryToHit()
     {                                 // have a pattern (hit, miss, hit, miss,....)
-        static bool hitToggle = true; // Keeps track of hit/miss pattern
-        bool result = hitToggle;      // Save current state
-        hitToggle = !hitToggle;       // Flip for next attack
-        return result;                // Return current result (true = hit)
+       int result = rand() % 100;    // Flip for next attack
+        return result ;                // Return current result (true = hit)
     }
 };
 
@@ -60,7 +59,7 @@ public:
     {
         Weapon currentWeapon = chooseWeapon();
 
-        std::cout << name << " attacks with " << currentWeapon.name << "!";
+        std::cout << name << " attacks with " << currentWeapon.name << "!"<<" with accuracy : " << currentWeapon.accuracy ;
         if (currentWeapon.tryToHit())
         {
             opponent.health -= currentWeapon.damage;
@@ -86,9 +85,9 @@ class optimusprime : public Character
 public:
     optimusprime()
         : Character( "OptimusPrime", 100, { 
-            Weapon("Ion rifle", 6), 
-            Weapon("Energon swords", 12),
-            Weapon("Shoulder Cannon", 45) 
+            Weapon("Ion rifle", 6 , 100), 
+            Weapon("Energon swords", 12 , 80),
+            Weapon("Shoulder Cannon", 45 , 25) 
         }) {}
 };
 
@@ -97,16 +96,16 @@ class megatron : public Character
 {
 public:
     megatron() : Character( "Megatron", 100, {
-            Weapon("Fusion Cannon", 9),
-            Weapon("fusion sword", 18),
-            Weapon("tank mode", 60)
+            Weapon("Fusion Cannon", 9 , 90),
+            Weapon("fusion sword", 18 , 70),
+            Weapon("tank mode", 60, 15)
         }) {}
 
 };
 // main function
 int main()
 {
-    srand(time(0));
+    srand(static_cast<unsigned int>(time(0))); //we use it to generate a rondom numbers every time we run the code
 
     //robotes...
     optimusprime op;
